@@ -14,21 +14,23 @@ import {observer} from 'mobx-react';
 import {getUserRole} from '@utils/getUserRole';
 
 const TaskListScreen = ({navigation}) => {
-  const {isLoading, tasks, setValue, filteredTasks} = store.appStore;
-
+  const {isLoading, tasks, setValue, filteredTasks, clearCreateTask} = store.appStore;
+  const isUser = getUserRole() === 'user';
   const navigateToCreate = () => {
+    clearCreateTask();
     navigation.navigate(MANAGER_STACK_NAVIGATION.USERS, {isFromTask: true});
   };
   const navigateToDetail = task => {
-    const role = getUserRole();
     setValue('taskId', task.id);
     setValue('taskStatus', task.status);
     setValue('taskTitle', task.title);
     setValue('taskDescription', task.description);
+    setValue('userTaskDescription', task.userTaskDescription);
     setValue('taskFile', task.taskFile);
+    setValue('userTaskFile', task.userTaskFile);
     setValue('firstName', task.userName);
     setValue('userId', task.userId);
-    if (role === 'user') {
+    if (isUser) {
       navigation.navigate(USER_STACK_NAVIGATION.DETAIL);
     } else {
       navigation.navigate(MANAGER_STACK_NAVIGATION.DETAIL);
@@ -53,7 +55,7 @@ const TaskListScreen = ({navigation}) => {
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={{paddingTop: 20, paddingBottom: 100}}
         />
-        <BottomButton title={STRINGS.buttons.createTask} onPress={navigateToCreate} />
+        {!isUser && <BottomButton title={STRINGS.buttons.createTask} onPress={navigateToCreate} />}
         {tasks.length === 0 && <EmptyItems textOnly text={STRINGS.alertInfo.emptyTasks} />}
       </View>
       <ProgressHUD isLoading={isLoading} />

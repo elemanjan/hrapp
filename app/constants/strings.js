@@ -16,6 +16,7 @@ const STRINGS = {
     lastName: 'Фамилия',
     reason: 'Причина',
     comment: 'Комментарий',
+    userComment: 'Комментарий исполнителя',
     code: 'Код',
     status: 'Статус',
   },
@@ -65,6 +66,7 @@ const STRINGS = {
     enterCode: 'Введите код, который пришел вам на почту',
     enterNewPassword: 'Придумайте новый пароль',
     attachment: 'Вложение',
+    userAttachment: 'Вложение исполнителя',
   },
   /**
    * Текст используемый в поп-апах

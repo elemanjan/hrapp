@@ -16,7 +16,7 @@ import {observer} from 'mobx-react';
 import {MANAGER_STACK_NAVIGATION} from '@navigation/screenConstants';
 
 const TaskCreateScreen = ({navigation}) => {
-  const {isLoading, taskDescription, taskTitle, setValue, uploadFile, taskFile, createTask} = store.appStore;
+  const {isLoading, taskDescription, taskTitle, setValue, uploadFile, taskFile, createTask, openFile} = store.appStore;
 
   const handleCreate = async () => {
     await createTask();
@@ -49,7 +49,7 @@ const TaskCreateScreen = ({navigation}) => {
             containerStyles={styles.inputContainer}
           />
           {taskFile.name ? (
-            <Text style={{marginTop: 8}}>
+            <Text style={{marginTop: 8, color: PRIMARY}} onPress={openFile}>
               {STRINGS.text.attachment}: {taskFile.name}
             </Text>
           ) : null}

@@ -3,8 +3,12 @@ import {persist} from 'mobx-persist';
 import {ADMIN, MANAGER} from '@config/credentials';
 import CreateEmptyAlert from '@utils/createEmptyAlert';
 import STRINGS from '@constants/strings';
+import * as DocumentPicker from 'react-native-document-picker';
 import {pick} from 'react-native-document-picker';
 import {STATUSES} from '@constants/constants';
+import {getUserRole} from '@utils/getUserRole';
+import FileViewer from 'react-native-file-viewer';
+import {Alert} from 'react-native';
 
 export default class AppStore {
   @persist('object') @observable user = {};
@@ -24,8 +28,13 @@ export default class AppStore {
   @observable taskId = 0;
   @observable taskTitle = '';
   @observable taskDescription = '';
+  @observable userTaskDescription = '';
   @observable taskStatus = STATUSES.new;
   @observable taskFile = {
+    name: '',
+    uri: '',
+  };
+  @observable userTaskFile = {
     name: '',
     uri: '',
   };
@@ -163,6 +172,11 @@ export default class AppStore {
         description: this.taskDescription,
         status: STATUSES.new,
         taskFile: this.taskFile,
+        userTaskFile: {
+          name: '',
+          uri: '',
+        },
+        userTaskDescription: '',
         userId: this.userId,
         userName: this.firstName,
       };
@@ -181,11 +195,15 @@ export default class AppStore {
       await this.fakeLoader(1200);
       const index = this.tasks.findIndex(item => item.id === this.taskId);
       this.tasks[index] = {
+        id: this.taskId,
         title: this.taskTitle,
         description: this.taskDescription,
         status: STATUSES.new,
         userId: this.userId,
         userName: this.firstName,
+        taskFile: this.taskFile,
+        userTaskFile: this.userTaskFile,
+        userTaskDescription: '',
       };
     } catch (error) {
     } finally {
@@ -218,6 +236,8 @@ export default class AppStore {
       const tempTasks = this.tasks;
       const index = this.tasks.findIndex(item => item.id === this.taskId);
       tempTasks[index].status = status;
+      tempTasks[index].userTaskFile = this.userTaskFile;
+      tempTasks[index].userTaskDescription = this.userTaskDescription;
       this.tasks = tempTasks;
     } catch (error) {
     } finally {
@@ -227,19 +247,36 @@ export default class AppStore {
   };
 
   @action.bound
-  uploadFile = async time => {
+  uploadFile = async () => {
     try {
-      // Открываем диалог выбора файла с устройства пользователя
+      const isUser = getUserRole() === 'user';
       const [result] = await pick({
-        mode: 'open',
-        requestLongTermAccess: true,
+        type: [DocumentPicker.types.allFiles],
       });
-      console.log('result', result);
       if (result) {
-        this.taskFile.name = result?.name;
-        this.taskFile.uri = result?.uri;
+        console.log('this user task', this.userTaskFile);
+        if (isUser) {
+          this.userTaskFile.name = result?.name;
+          this.userTaskFile.uri = result?.uri;
+        } else {
+          this.taskFile.name = result?.name;
+          this.taskFile.uri = result?.uri;
+        }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('error upload file', error);
+    }
+  };
+
+  @action.bound
+  openFile = async () => {
+    try {
+      const isUser = getUserRole() === 'user';
+      await FileViewer.open(isUser ? this.userTaskFile.uri : this.taskFile.uri);
+    } catch (error) {
+      // console.error('Ошибка при обмене файлом:', error);
+      Alert.alert('Ошибка', 'Ошибка при открытии файла');
+    }
   };
 
   @computed

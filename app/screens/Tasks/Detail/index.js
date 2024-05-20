@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import commonStyles from '@styles/commonStyles';
@@ -16,6 +16,7 @@ import {observer} from 'mobx-react';
 import {getUserRole} from '@utils/getUserRole';
 import CustomButton from '@components/CustomButton/CustomButton';
 import {STATUSES} from '@constants/constants';
+import FileViewer from 'react-native-file-viewer';
 
 const TaskDetailScreen = ({navigation}) => {
   const {
@@ -25,11 +26,14 @@ const TaskDetailScreen = ({navigation}) => {
     setValue,
     uploadFile,
     taskFile,
-    createTask,
+    userTaskFile,
+    updateTask,
     firstName,
     deleteTask,
     taskStatus,
     updateTaskStatus,
+    userTaskDescription,
+    openFile,
   } = store.appStore;
   const isUser = getUserRole() === 'user';
 
@@ -37,8 +41,8 @@ const TaskDetailScreen = ({navigation}) => {
     await deleteTask();
     navigation.navigate(MANAGER_STACK_NAVIGATION.LIST);
   };
-  const handleCreate = async () => {
-    await createTask();
+  const handleUpdate = async () => {
+    await updateTask();
     navigation.navigate(MANAGER_STACK_NAVIGATION.LIST);
   };
 
@@ -65,6 +69,7 @@ const TaskDetailScreen = ({navigation}) => {
             onChangeText={text => setValue('taskTitle', text)}
             label={STRINGS.placeholders.taskName}
             containerStyles={styles.inputContainer}
+            editable={!isUser}
           />
           <TextField
             multiline
@@ -73,15 +78,45 @@ const TaskDetailScreen = ({navigation}) => {
             label={STRINGS.placeholders.comment}
             inputStyles={styles.noteInput}
             containerStyles={styles.inputContainer}
+            editable={!isUser}
           />
-          {taskFile.name ? (
-            <Text style={{marginTop: 8}}>
+          {taskFile?.name ? (
+            <Text style={[styles.attachTitle, {marginTop: 8}]} onPress={openFile}>
               {STRINGS.text.attachment}: {taskFile.name}
             </Text>
           ) : null}
-          <TouchableOpacity onPress={handleUploadFile} style={styles.attachButton}>
-            <Text style={styles.attachTitle}>{STRINGS.buttons.addAttach}</Text>
-          </TouchableOpacity>
+          {!isUser && taskStatus !== STATUSES.new ? (
+            <TextField
+              multiline
+              value={userTaskDescription}
+              onChangeText={text => setValue('userTaskDescription', text)}
+              label={STRINGS.placeholders.userComment}
+              inputStyles={styles.noteInput}
+              containerStyles={styles.inputContainer}
+              editable={taskStatus !== STATUSES.done && isUser}
+            />
+          ) : null}
+          {isUser ? (
+            <TextField
+              multiline
+              value={userTaskDescription}
+              onChangeText={text => setValue('userTaskDescription', text)}
+              label={STRINGS.placeholders.userComment}
+              inputStyles={styles.noteInput}
+              containerStyles={styles.inputContainer}
+              editable={taskStatus !== STATUSES.done && isUser}
+            />
+          ) : null}
+          {userTaskFile?.name && isUser ? (
+            <Text style={[styles.attachTitle, {marginTop: 16}]} onPress={openFile}>
+              {STRINGS.text.userAttachment}: {userTaskFile.name}
+            </Text>
+          ) : null}
+          {taskStatus !== STATUSES.done ? (
+            <TouchableOpacity onPress={handleUploadFile} style={styles.attachButton}>
+              <Text style={styles.attachTitle}>{STRINGS.buttons.addAttach}</Text>
+            </TouchableOpacity>
+          ) : null}
           <View
             style={{
               flexDirection: 'row',
@@ -113,14 +148,15 @@ const TaskDetailScreen = ({navigation}) => {
               onPress={isUser ? () => handleUpdateStatus(STATUSES.done) : handleDelete}
               containerStyles={[
                 {backgroundColor: isUser ? SECONDARY : RED, marginHorizontal: 10},
-                isUser && {width: '95%'},
+                isUser ? {width: '95%'} : {},
               ]}
               textStyles={{color: WHITE}}
             />
           </View>
           <CustomButton
+            hide={isUser || taskStatus === STATUSES.accepted || taskStatus === STATUSES.rejected}
             title={STRINGS.buttons.save}
-            onPress={handleCreate}
+            onPress={handleUpdate}
             containerStyles={{marginHorizontal: 10, marginTop: 4, marginBottom: 120}}
           />
         </KeyboardAwareScrollView>
