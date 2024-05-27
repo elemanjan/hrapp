@@ -163,7 +163,7 @@ export default class AppStore {
   };
 
   scheduleNotification = async () => {
-    const timestamp = new Date(this.deadlineDate).getTime();
+    const timestamp = new Date(this.deadlineDate).getTime() - 3600000;
     const trigger = {
       type: TriggerType.TIMESTAMP,
       timestamp,
@@ -171,10 +171,10 @@ export default class AppStore {
 
     await notifee.createTriggerNotification(
       {
-        title: 'Дедлайн',
-        body: 'Дедлай',
+        title: 'Скоро дедлайн 🔥🔥🔥',
+        body: 'До дедлайна вашей задачи остался час',
         android: {
-          channelId: 'Main',
+          channelId: 'user',
         },
       },
       trigger,

@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "deploy:android": "cd ./android && fastlane deploy",
     "beta:android": "cd ./android && fastlane beta",
-    "clean": "react-native-clean-project"
+    "clean": "react-native-clean-project",
+    "build": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/"
   },
   "dependencies": {
     "@notifee/react-native": "^7.8.2",

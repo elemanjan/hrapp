@@ -14,6 +14,28 @@ import STRINGS from '@constants/strings';
 import TextField from '@components/TextField';
 import CreateEmptyAlert from '@utils/createEmptyAlert';
 import {observer} from 'mobx-react';
+import {getUserRole} from '@utils/getUserRole';
+import notifee, {AndroidImportance} from '@notifee/react-native';
+
+async function createNotificationChannel() {
+  const isUser = getUserRole() === 'user';
+  await notifee.createChannel({
+    id: 'main',
+    name: 'Main',
+    lights: false,
+    vibration: true,
+    importance: AndroidImportance.HIGH,
+  });
+  if (isUser) {
+    await notifee.createChannel({
+      id: 'user',
+      name: 'User',
+      lights: false,
+      vibration: true,
+      importance: AndroidImportance.HIGH,
+    });
+  }
+}
 
 const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -24,6 +46,7 @@ const LoginScreen = ({navigation}) => {
    */
   const handleLogin = async () => {
     const isSuccess = await onLogin(username, password);
+    await createNotificationChannel();
     if (isSuccess) {
       navigation.replace(NAVIGATION_APP);
     } else {
