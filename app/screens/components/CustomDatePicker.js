@@ -6,7 +6,6 @@ import TextField from '@components/TextField';
 import PropTypes from 'prop-types';
 import {SCALE_20} from '@styles/spacing';
 import DatePicker from 'react-native-date-picker';
-import {endOfDay} from 'date-fns';
 
 /**
  * Выбор даты по и до, используется в фильтрах
@@ -16,7 +15,7 @@ const CustomDatePicker = ({onChangeDate, placeholder}) => {
   /**
    * Date picker
    */
-  const [date, setDate] = useState(new Date(endOfDay(new Date())));
+  const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
 
   /**
@@ -46,6 +45,7 @@ const CustomDatePicker = ({onChangeDate, placeholder}) => {
       </View>
 
       <DatePicker
+        minimumDate={new Date()}
         modal
         locale={'ru-RU'}
         open={open}

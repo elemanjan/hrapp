@@ -16,10 +16,12 @@ import {getUserRole} from '@utils/getUserRole';
 const TaskListScreen = ({navigation}) => {
   const {isLoading, tasks, setValue, filteredTasks, clearCreateTask} = store.appStore;
   const isUser = getUserRole() === 'user';
+
   const navigateToCreate = () => {
     clearCreateTask();
     navigation.navigate(MANAGER_STACK_NAVIGATION.USERS, {isFromTask: true});
   };
+
   const navigateToDetail = task => {
     setValue('taskId', task.id);
     setValue('taskStatus', task.status);

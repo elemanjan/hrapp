@@ -9,6 +9,7 @@ import {STATUSES} from '@constants/constants';
 import {getUserRole} from '@utils/getUserRole';
 import FileViewer from 'react-native-file-viewer';
 import {Alert} from 'react-native';
+import notifee, {TriggerType} from '@notifee/react-native';
 
 export default class AppStore {
   @persist('object') @observable user = {};
@@ -38,6 +39,7 @@ export default class AppStore {
     name: '',
     uri: '',
   };
+  @observable deadlineDate = new Date();
 
   @action.bound
   setUser(user) {
@@ -160,6 +162,25 @@ export default class AppStore {
     } catch (error) {}
   };
 
+  scheduleNotification = async () => {
+    const timestamp = new Date(this.deadlineDate).getTime();
+    const trigger = {
+      type: TriggerType.TIMESTAMP,
+      timestamp,
+    };
+
+    await notifee.createTriggerNotification(
+      {
+        title: 'Дедлайн',
+        body: 'Дедлай',
+        android: {
+          channelId: 'Main',
+        },
+      },
+      trigger,
+    );
+  };
+
   @action.bound
   createTask = async () => {
     try {
@@ -181,6 +202,7 @@ export default class AppStore {
         userName: this.firstName,
       };
       this.tasks.push(task);
+      await this.scheduleNotification();
     } catch (error) {
     } finally {
       this.isLoading = false;
@@ -286,6 +308,11 @@ export default class AppStore {
 
     // Фильтруем задачи по id пользователя
     return this.tasks.filter(task => task.userId === userId);
+  }
+
+  @action.bound
+  setDeadlineDate(date) {
+    this.deadlineDate = date;
   }
 
   @action.bound
