@@ -66,7 +66,7 @@ const TaskCreateScreen = ({navigation}) => {
             disabled={checkDisabledBtn()}
             title={STRINGS.buttons.createTask}
             onPress={handleCreate}
-            containerStyles={{marginHorizontal: 10, marginTop: 30, marginBottom: 20}}
+            containerStyles={{marginHorizontal: 10, marginTop: 30, marginBottom: 40}}
           />
         </KeyboardAwareScrollView>
       </View>

@@ -9,6 +9,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import store from './store/index';
 import {navigationRef} from '@navigation/NavigationService';
 import {PERMISSIONS, request} from 'react-native-permissions';
+import notifee from '@notifee/react-native';
 
 const stores = {
   appStore: store.appStore,
@@ -20,10 +21,20 @@ async function requestUserPermission() {
   }
 }
 
+async function bootstrap() {
+  const initialNotification = await notifee.getInitialNotification();
+
+  if (initialNotification) {
+    console.log('Notification caused application to open', initialNotification.notification);
+    console.log('Press action used to open the app', initialNotification.pressAction);
+  }
+}
+
 @observer
 class App extends Component {
   componentDidMount() {
     requestUserPermission();
+    bootstrap();
   }
 
   render() {

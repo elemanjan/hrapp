@@ -175,6 +175,9 @@ export default class AppStore {
         body: 'До дедлайна вашей задачи остался час',
         android: {
           channelId: 'user',
+          pressAction: {
+            id: 'default',
+          },
         },
       },
       trigger,
