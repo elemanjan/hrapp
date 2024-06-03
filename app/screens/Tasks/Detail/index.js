@@ -91,7 +91,7 @@ const TaskDetailScreen = ({navigation}) => {
             />
           </View>
           {taskFile?.name ? (
-            <Text style={[styles.attachTitle, {marginTop: 8}]} onPress={openFile}>
+            <Text style={[styles.attachTitle, {marginTop: 8}]} onPress={() => openFile(false)}>
               {STRINGS.text.attachment}: {taskFile.name}
             </Text>
           ) : null}
@@ -118,7 +118,7 @@ const TaskDetailScreen = ({navigation}) => {
             />
           ) : null}
           {userTaskFile?.name && isUser ? (
-            <Text style={[styles.attachTitle, {marginTop: 16}]} onPress={openFile}>
+            <Text style={[styles.attachTitle, {marginTop: 16}]} onPress={() => openFile(true)}>
               {STRINGS.text.userAttachment}: {userTaskFile.name}
             </Text>
           ) : null}

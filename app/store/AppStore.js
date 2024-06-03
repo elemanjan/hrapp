@@ -233,6 +233,7 @@ export default class AppStore {
         userTaskDescription: '',
       };
     } catch (error) {
+      console.log('error upd task', error);
     } finally {
       this.isLoading = false;
       this.clearCreateTask();
@@ -296,12 +297,15 @@ export default class AppStore {
   };
 
   @action.bound
-  openFile = async () => {
+  openFile = async isUserFile => {
     try {
-      const isUser = getUserRole() === 'user';
-      await FileViewer.open(isUser ? this.userTaskFile.uri : this.taskFile.uri);
+      if (isUserFile) {
+        await FileViewer.open(this.userTaskFile.uri);
+      } else {
+        await FileViewer.open(this.taskFile.uri);
+      }
     } catch (error) {
-      // console.error('Ошибка при обмене файлом:', error);
+      console.error('Ошибка при обмене файлом:', error);
       Alert.alert('Ошибка', 'Ошибка при открытии файла');
     }
   };
