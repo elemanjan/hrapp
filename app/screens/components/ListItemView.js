@@ -1,8 +1,9 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {GRAY_MEDIUM, GRAY_TEXT, PRIMARY, RAISIN_BLACK, WHITE} from '@styles/colors';
+import StatusIndicator, {getStatusStyle} from '@components/StatusIndicator';
 
-export const ListItemView = ({title, subTitle, thirdTitle, onPress}) => {
+export const ListItemView = ({title, subTitle, thirdTitle, onPress, status}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.textContainer}>
@@ -15,12 +16,14 @@ export const ListItemView = ({title, subTitle, thirdTitle, onPress}) => {
           </Text>
         ) : null}
         {thirdTitle ? (
-          <Text numberOfLines={1} style={styles.thirdTitle}>
+          <Text numberOfLines={1} style={[styles.thirdTitle, {color: getStatusStyle(status)}]}>
             {thirdTitle}
           </Text>
         ) : null}
       </View>
-      <View style={styles.iconContainer}></View>
+      <View style={styles.iconContainer}>
+        <StatusIndicator status={status} />
+      </View>
     </TouchableOpacity>
   );
 };

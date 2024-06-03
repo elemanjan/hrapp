@@ -45,6 +45,7 @@ const TaskListScreen = ({navigation}) => {
       subTitle={item.description}
       thirdTitle={item.status}
       onPress={() => navigateToDetail(item)}
+      status={item.status}
     />
   );
 
