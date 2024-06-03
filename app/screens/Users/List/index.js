@@ -28,6 +28,7 @@ const UsersListScreen = ({navigation, route}) => {
     setValue('email', user.email);
     setValue('firstName', user.name);
     setValue('password', user.password);
+    setValue('selectedUser', user);
     if (isFromTask) {
       navigation.navigate(MANAGER_STACK_NAVIGATION.CREATE);
     } else {

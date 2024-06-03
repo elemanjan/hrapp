@@ -30,6 +30,7 @@ const TextField = forwardRef(
       onChangeText,
       icon,
       iconPress,
+      editable = true,
       ...inputProps
     },
     ref,
@@ -45,6 +46,7 @@ const TextField = forwardRef(
         <View
           style={[
             styles.inputField,
+            !editable && {borderWidth: 0},
             error ? styles.errorBorder : {},
             icon
               ? {
@@ -61,6 +63,7 @@ const TextField = forwardRef(
             onFocus={onFocus}
             onEndEditing={onEndEditing}
             ref={ref}
+            editable={editable}
             {...inputProps}
           />
           {icon ? (

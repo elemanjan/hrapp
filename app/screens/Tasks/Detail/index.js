@@ -4,12 +4,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import commonStyles from '@styles/commonStyles';
 import ProgressHUD from '@components/ProgressHUD';
-import {ORANGE_DARK, PRIMARY, RED, SECONDARY, WHITE} from '@styles/colors';
+import {GRAY_TEXT, ORANGE_DARK, PRIMARY, RED, SECONDARY, WHITE} from '@styles/colors';
 import store from '@store/index';
 import {MANAGER_STACK_NAVIGATION, USER_STACK_NAVIGATION} from '@navigation/screenConstants';
 import {SCALE_16} from '@styles/spacing';
 import {Colors} from '@styles/index';
-import {FONT_BOLD, FONT_SIZE_13} from '@styles/typography';
+import {FONT_BOLD, FONT_SIZE_12, FONT_SIZE_13} from '@styles/typography';
 import STRINGS from '@constants/strings';
 import TextField from '@components/TextField';
 import {observer} from 'mobx-react';
@@ -17,6 +17,7 @@ import {getUserRole} from '@utils/getUserRole';
 import CustomButton from '@components/CustomButton/CustomButton';
 import {STATUSES} from '@constants/constants';
 import FileViewer from 'react-native-file-viewer';
+import CustomDatePicker from '@screens/components/CustomDatePicker';
 
 const TaskDetailScreen = ({navigation}) => {
   const {
@@ -34,6 +35,7 @@ const TaskDetailScreen = ({navigation}) => {
     updateTaskStatus,
     userTaskDescription,
     openFile,
+    setDeadlineDate,
   } = store.appStore;
   const isUser = getUserRole() === 'user';
 
@@ -62,14 +64,14 @@ const TaskDetailScreen = ({navigation}) => {
   return (
     <SafeAreaView edges={['left', 'right']} style={[commonStyles.container]}>
       <View style={styles.container}>
-        <KeyboardAwareScrollView extraScrollHeight={100} style={styles.inputWrapContainer}>
+        <KeyboardAwareScrollView extraScrollHeight={140} style={styles.inputWrapContainer}>
           <TextField value={firstName} label={STRINGS.placeholders.username} editable={false} />
           <TextField
             value={taskTitle}
             onChangeText={text => setValue('taskTitle', text)}
             label={STRINGS.placeholders.taskName}
             containerStyles={styles.inputContainer}
-            editable={!isUser}
+            editable={!isUser && taskStatus === STATUSES.new}
           />
           <TextField
             multiline
@@ -78,8 +80,16 @@ const TaskDetailScreen = ({navigation}) => {
             label={STRINGS.placeholders.comment}
             inputStyles={styles.noteInput}
             containerStyles={styles.inputContainer}
-            editable={!isUser}
+            editable={!isUser && taskStatus === STATUSES.new}
           />
+          <View style={styles.dateContainer}>
+            <Text style={styles.dateLabel}>Дата выполнения</Text>
+            <CustomDatePicker
+              isEditable={!isUser && taskStatus === STATUSES.new}
+              onChangeDate={setDeadlineDate}
+              placeholder={'Выберите дату дедлайна'}
+            />
+          </View>
           {taskFile?.name ? (
             <Text style={[styles.attachTitle, {marginTop: 8}]} onPress={openFile}>
               {STRINGS.text.attachment}: {taskFile.name}
@@ -112,7 +122,7 @@ const TaskDetailScreen = ({navigation}) => {
               {STRINGS.text.userAttachment}: {userTaskFile.name}
             </Text>
           ) : null}
-          {taskStatus !== STATUSES.done ? (
+          {taskStatus === STATUSES.new ? (
             <TouchableOpacity onPress={handleUploadFile} style={styles.attachButton}>
               <Text style={styles.attachTitle}>{STRINGS.buttons.addAttach}</Text>
             </TouchableOpacity>
@@ -153,12 +163,14 @@ const TaskDetailScreen = ({navigation}) => {
               textStyles={{color: WHITE}}
             />
           </View>
-          <CustomButton
-            hide={isUser || taskStatus === STATUSES.accepted || taskStatus === STATUSES.rejected}
-            title={STRINGS.buttons.save}
-            onPress={handleUpdate}
-            containerStyles={{marginHorizontal: 10, marginTop: 4, marginBottom: 120}}
-          />
+          <View style={{paddingBottom: 40}}>
+            <CustomButton
+              hide={isUser || taskStatus === STATUSES.accepted || taskStatus === STATUSES.rejected}
+              title={STRINGS.buttons.save}
+              onPress={handleUpdate}
+              containerStyles={{marginHorizontal: 10, marginTop: 4, marginBottom: 120}}
+            />
+          </View>
         </KeyboardAwareScrollView>
       </View>
       <ProgressHUD isLoading={isLoading} />
@@ -203,6 +215,14 @@ const styles = StyleSheet.create({
   },
   attachTitle: {
     color: PRIMARY,
+  },
+  dateContainer: {
+    paddingTop: 20,
+  },
+  dateLabel: {
+    color: GRAY_TEXT,
+    fontSize: FONT_SIZE_12,
+    marginBottom: 2,
   },
 });
 

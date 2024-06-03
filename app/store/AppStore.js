@@ -25,6 +25,7 @@ export default class AppStore {
   @observable login = '';
   @observable email = '';
   @observable password = '';
+  @observable selectedUser = null;
 
   @observable taskId = 0;
   @observable taskTitle = '';
@@ -122,8 +123,9 @@ export default class AppStore {
     try {
       this.isLoading = true;
       await this.fakeLoader(1200);
-      const index = this.users.findIndex(user => user.login === this.login);
+      const index = this.users.findIndex(user => user.id === this.selectedUser.id);
       this.users[index] = {
+        id: this.selectedUser.id,
         name: this.firstName,
         password: this.password,
         email: this.email,

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 import format from '@utils/format';
 import {observer} from 'mobx-react';
 import TextField from '@components/TextField';
@@ -11,7 +11,7 @@ import DatePicker from 'react-native-date-picker';
  * Выбор даты по и до, используется в фильтрах
  */
 
-const CustomDatePicker = ({onChangeDate, placeholder}) => {
+const CustomDatePicker = ({onChangeDate, placeholder, isEditable = true}) => {
   /**
    * Date picker
    */
@@ -31,17 +31,23 @@ const CustomDatePicker = ({onChangeDate, placeholder}) => {
     onChangeDate(date ? date : '');
   };
 
+  function handleOpen() {
+    if (isEditable) {
+      setOpen(true);
+    }
+  }
+
   return (
     <>
       <View style={styles.datePicker}>
-        <TouchableOpacity style={[styles.datePickerItem]} onPress={() => setOpen(true)}>
+        <Pressable style={[styles.datePickerItem]} onPress={handleOpen}>
           <TextField
             editable={false}
             placeholder={placeholder}
             value={date ? `${format(date, 'dd-MMMM-yyyy')} | ${date.toLocaleTimeString()}` : ''}
             pointerEvents="none"
           />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <DatePicker
