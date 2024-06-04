@@ -205,6 +205,7 @@ export default class AppStore {
         userTaskDescription: '',
         userId: this.userId,
         userName: this.firstName,
+        deadlineDate: this.deadlineDate,
       };
       this.tasks.push(task);
       await this.scheduleNotification();
@@ -231,6 +232,7 @@ export default class AppStore {
         taskFile: this.taskFile,
         userTaskFile: this.userTaskFile,
         userTaskDescription: '',
+        deadlineDate: this.deadlineDate,
       };
     } catch (error) {
       console.log('error upd task', error);
@@ -333,7 +335,15 @@ export default class AppStore {
   clearCreateTask() {
     this.taskTitle = '';
     this.taskDescription = '';
-    this.taskFile = {};
+    this.taskFile = {
+      name: '',
+      uri: '',
+    };
+    this.userTaskFile = {
+      name: '',
+      uri: '',
+    };
+    this.deadlineDate = new Date();
   }
 
   @action.bound

@@ -32,6 +32,7 @@ const TaskDetailScreen = ({navigation}) => {
     firstName,
     deleteTask,
     taskStatus,
+    deadlineDate,
     updateTaskStatus,
     userTaskDescription,
     openFile,
@@ -85,6 +86,7 @@ const TaskDetailScreen = ({navigation}) => {
           <View style={styles.dateContainer}>
             <Text style={styles.dateLabel}>Дата выполнения</Text>
             <CustomDatePicker
+              dt={deadlineDate}
               isEditable={!isUser && taskStatus === STATUSES.new}
               onChangeDate={setDeadlineDate}
               placeholder={'Выберите дату дедлайна'}

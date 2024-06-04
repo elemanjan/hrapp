@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {STATUSES} from '@constants/constants';
-import {GRAY_TEXT, GREEN, RED, YELLOW} from '@styles/colors';
+import {GREEN, PRIMARY, RED, YELLOW} from '@styles/colors';
 
 export const getStatusStyle = status => {
   switch (status) {
@@ -13,7 +13,7 @@ export const getStatusStyle = status => {
     case STATUSES.accepted:
       return GREEN;
     default:
-      return GRAY_TEXT;
+      return PRIMARY;
   }
 };
 

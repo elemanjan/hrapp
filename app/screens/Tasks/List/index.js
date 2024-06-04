@@ -32,6 +32,7 @@ const TaskListScreen = ({navigation}) => {
     setValue('userTaskFile', task.userTaskFile);
     setValue('firstName', task.userName);
     setValue('userId', task.userId);
+    setValue('deadlineDate', task.deadlineDate);
     if (isUser) {
       navigation.navigate(USER_STACK_NAVIGATION.DETAIL);
     } else {
@@ -53,7 +54,7 @@ const TaskListScreen = ({navigation}) => {
     <SafeAreaView edges={['left', 'right']} style={[commonStyles.container]}>
       <View style={styles.container}>
         <FlatList
-          data={getUserRole() === 'user' ? filteredTasks : tasks}
+          data={getUserRole() === 'user' ? filteredTasks.slice().reverse() : tasks.slice().reverse()}
           renderItem={renderItem}
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={{paddingTop: 20, paddingBottom: 100}}

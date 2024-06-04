@@ -11,11 +11,11 @@ import DatePicker from 'react-native-date-picker';
  * Выбор даты по и до, используется в фильтрах
  */
 
-const CustomDatePicker = ({onChangeDate, placeholder, isEditable = true}) => {
+const CustomDatePicker = ({dt, onChangeDate, placeholder, isEditable = true}) => {
   /**
    * Date picker
    */
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(dt ? new Date(dt) : new Date());
   const [open, setOpen] = useState(false);
 
   /**

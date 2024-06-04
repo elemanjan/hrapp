@@ -21,9 +21,11 @@ export const ListItemView = ({title, subTitle, thirdTitle, onPress, status}) => 
           </Text>
         ) : null}
       </View>
-      <View style={styles.iconContainer}>
-        <StatusIndicator status={status} />
-      </View>
+      {status ? (
+        <View style={styles.iconContainer}>
+          <StatusIndicator status={status} />
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };
