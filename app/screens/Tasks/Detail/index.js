@@ -119,7 +119,7 @@ const TaskDetailScreen = ({navigation}) => {
               editable={taskStatus !== STATUSES.done && isUser}
             />
           ) : null}
-          {userTaskFile?.name && isUser ? (
+          {(userTaskFile?.name && taskStatus !== STATUSES.new) || isUser ? (
             <Text style={[styles.attachTitle, {marginTop: 16}]} onPress={() => openFile(true)}>
               {STRINGS.text.userAttachment}: {userTaskFile.name}
             </Text>
